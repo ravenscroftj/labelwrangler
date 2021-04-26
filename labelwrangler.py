@@ -83,6 +83,25 @@ def stat(input_file, label_column):
 @cli.command()
 @click.argument("input_file", type=click.Path(file_okay=True))
 @click.argument("output_file", type=click.Path(file_okay=True))
+@click.option("--columns", type=str, default=None, help="comma separated list of columns to check for na", required=True)
+def dropna(input_file, output_file,  columns):
+    """Drop rows where a None/NA value appears in one of columns"""
+
+    print(f"Load dataframe from {input_file}")
+
+    df = pd.read_csv(input_file)
+
+    after_drop = df.dropna(subset=columns.split(','))
+
+    print(f"Removing {len(df) - len(after_drop)} columns from dataset")
+
+    after_drop.to_csv(output_file)
+
+
+
+@cli.command()
+@click.argument("input_file", type=click.Path(file_okay=True))
+@click.argument("output_file", type=click.Path(file_okay=True))
 @click.option("--label-column", type=str, default=None, help="name of column containing label", required=True)
 @click.option("--remove-list", type=str, default=None, help="comma separated labels to remove", required=True)
 def remove(input_file, output_file,  label_column, remove_list):
